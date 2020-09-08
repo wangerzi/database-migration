@@ -1,0 +1,25 @@
+src:
+  type: mysql
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  passwd: root
+dst:
+  type: mysql
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  passwd: root
+rules:
+  limit: 10000
+  order: asc
+database:
+  - database1
+  - name: database2
+    tables:
+      - table1
+      - name: table3
+        rules:
+          limit: 100
+          order: desc
+      - table2

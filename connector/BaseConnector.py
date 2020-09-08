@@ -3,6 +3,22 @@ import abc
 
 class BaseConnector(metaclass=abc.ABCMeta):
     @abc.abstractmethod
+    def get_database_tables(self, database):
+        pass
+
+    @abc.abstractmethod
+    def get_databases(self):
+        pass
+
+    @abc.abstractmethod
+    def get_drop_database_sql(self, database):
+        pass
+
+    @abc.abstractmethod
+    def get_create_database_sql(self, database):
+        pass
+
+    @abc.abstractmethod
     def get_drop_table_sql(self, database, table):
         pass
 
@@ -15,7 +31,7 @@ class BaseConnector(metaclass=abc.ABCMeta):
         """
         :param database: mysql database
         :param table: table in database
-        :param rules: {"limit": None}
+        :param rules: {"limit": None, "order": "asc"}
         :return:
         """
         pass
