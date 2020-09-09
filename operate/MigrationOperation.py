@@ -5,6 +5,10 @@ class MigrationOperation:
     def __init__(self, src_connector, dst_connector):
         self.src_connector = src_connector
         self.dst_connector = dst_connector
+        self.dst_connector.start_tran()
+
+    def complete(self):
+        self.dst_connector.commit_tran()
 
     def migration_database_struct(self, database):
         key = "%s.%s.%s" % (self.src_connector, self.dst_connector, database)
@@ -25,7 +29,6 @@ class MigrationOperation:
         else:
             drop_sql = self.dst_connector.get_drop_table_sql(database, table)
             create_sql = self.src_connector.get_create_table_sql(database, table)
-            print(drop_sql, create_sql)
             self.dst_connector.use_database(database)
             self.dst_connector.execute_sql(drop_sql)
             self.dst_connector.execute_sql(create_sql)
@@ -33,6 +36,9 @@ class MigrationOperation:
             return True
 
     def migration_table_data(self, database, table, rules):
-        self.dst_connector.use_database(database)
         data = self.src_connector.get_table_data(database, table, rules)
-        self.dst_connector.insert_table_data(database, table, data)
+        self.dst_connector.use_database(database)
+        num = self.dst_connector.insert_table_data(database, table, data)
+        if num is None:
+            return -1
+        return num

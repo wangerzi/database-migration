@@ -31,9 +31,13 @@ class BaseConnector(metaclass=abc.ABCMeta):
         """
         :param database: mysql database
         :param table: table in database
-        :param rules: {"limit": None, "order": "asc"}
+        :param rules: {"limit": None, "order_field": None, "order": "asc"}
         :return:
         """
+        pass
+
+    @abc.abstractmethod
+    def get_table_fields(self, database, table):
         pass
 
     @abc.abstractmethod

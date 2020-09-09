@@ -100,7 +100,12 @@ def migration_database(plan):
         # 2. migration table struct
         migration.migration_table_struct(item['database'], item['table'])
         # 3. migration table data
-        migration.migration_table_data(item['database'], item['table'], item['rules'])
+        res = migration.migration_table_data(item['database'], item['table'], item['rules'])
+        if res < 0:
+            print("[migration] error migration data %s.%s.%s" % (item['database'], item['table'], item['rules']))
+        else:
+            print("[migration] %s items at %s.%s.%s" % (res, item['database'], item['table'], item['rules']))
+        migration.complete()
     end_micro_time = int(time.time() * 1000)
     print("[migration] ended between %.3f" % ((end_micro_time - start_micro_time) / 1000))
 

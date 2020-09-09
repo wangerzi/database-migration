@@ -4,7 +4,8 @@ from operate.MigrationOperation import MigrationOperation
 if __name__ == '__main__':
     con = MySQLConnector('127.0.0.1', '3356', 'root', 'wearelunaon123456')
 
-    print(con.get_databases())
+    print(con.get_table_fields('inssrv', 'sessions'))
+    # print(con.get_databases())
     # print(con.get_create_table_sql('inssrv', 'sessions'))
     # print(con.get_drop_table_sql('inssrv', 'sessions'))
     # print(con.get_table_data('inssrv', 'sessions'))
