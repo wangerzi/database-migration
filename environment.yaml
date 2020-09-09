@@ -1,4 +1,4 @@
-name: mysql-migration
+name: database-migration
 channels:
   - defaults
 dependencies:
@@ -23,5 +23,5 @@ dependencies:
     - mysql-connector==2.2.9
     - pyaml==20.4.0
     - pyyaml==5.3.1
-prefix: /opt/anaconda3/envs/mysql-migration
+prefix: /opt/anaconda3/envs/database-migration
 
