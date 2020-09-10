@@ -16,7 +16,9 @@
   "config": {
     "rebuild_database": "never",
     "rebuild_table": "auto",
-    "rebuild_data": "alway"
+    "rebuild_data": "alway",
+    "data_select_trunk": 1000,
+    "data_insert_trunk": 1000
   },
   "rules": {
     "limit": 10000

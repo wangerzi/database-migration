@@ -14,6 +14,8 @@ config:
   rebuild_database: never
   rebuild_table: auto
   rebuild_data: always
+  data_select_trunk: 1000
+  data_insert_trunk: 1000
 rules:
   limit: 2
 database:
