@@ -10,6 +10,10 @@ dst:
   port: 3306
   user: root
   passwd: root
+config:
+  rebuild_database: never
+  rebuild_table: auto
+  rebuild_data: alway
 rules:
   limit: 10000
 database:

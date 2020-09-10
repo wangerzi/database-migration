@@ -78,6 +78,10 @@ dst:
   port: 3306
   user: root
   passwd: root
+config:
+  rebuild_database: never
+  rebuild_table: auto
+  rebuild_data: alway
 rules:
   limit: 10000
 database:
@@ -109,6 +113,11 @@ JSON config **(开发中)**:
     "user": "root",
     "passwd": "root"
   },
+  "config": {
+    "rebuild_database": "never",
+    "rebuild_table": "auto",
+    "rebuild_data": "alway"
+  },
   "rules": {
     "limit": 10000
   },
@@ -131,21 +140,47 @@ JSON config **(开发中)**:
 }
 ```
 
-| 参数       | 备注                                                         | 必填 |
-| ---------- | ------------------------------------------------------------ | ---- |
-| src        | 源数据库                                                     | 是   |
-| src.type   | 源数据库类型，目前只支持MySQL                                | 是   |
-| src.port   | 源数据库端口                                                 | 是   |
-| src.user   | 源数据库用户                                                 | 是   |
-| src.passwd | 源数据库密码                                                 | 是   |
-| dst        | 目标数据库                                                   | 是   |
-| dst.type   | 目标数据库类型，目前只支持MySQL                              | 是   |
-| dst.port   | 目标数据库端口                                               | 是   |
-| dst.user   | 目标数据库用户                                               | 是   |
-| dst.passwd | 目标数据库密码                                               | 是   |
-| rules      | 需要是一个映射对象，支持参数 limit: number, order_filed: order field, order: asc/desc, 默认: `{"limit": None, "order_field": None, "order": 'asc'}` | 否   |
-| database   | 迁移的数据库，可以写为扩展形式 `{"name": "database name", "tables": ["table1", "table2", {"name": "table3", "rules": {...}}]}` | 是   |
+| 参数                    | 备注                                                         | 必填 |
+| ----------------------- | ------------------------------------------------------------ | ---- |
+| src                     | 源数据库                                                     | 是   |
+| src.type                | 源数据库类型，目前只支持MySQL                                | 是   |
+| src.port                | 源数据库端口                                                 | 是   |
+| src.user                | 源数据库用户                                                 | 是   |
+| src.passwd              | 源数据库密码                                                 | 是   |
+| dst                     | 目标数据库                                                   | 是   |
+| dst.type                | 目标数据库类型，目前只支持MySQL                              | 是   |
+| dst.port                | 目标数据库端口                                               | 是   |
+| dst.user                | 目标数据库用户                                               | 是   |
+| dst.passwd              | 目标数据库密码                                               | 是   |
+| config                  | 其他配置项                                                   | 是   |
+| config.rebuild_database | 重建数据库，支持（auto/always/never），如果写入了 auto，会检查是否存在并且对比建库语句 | 是   |
+| config.rebuild_table    | 重建数据表，支持（auto/always/never），如果写入了 auto，会检查是否存在并且对比数据库建表语句 | 是   |
+| config.rebuild_data     | 重建表数据，支持（auto/always/never），如果写入了 `auto` 或者 `always`，会清理目标数据表中原有内容并重建 | 是   |
+| rules                   | 需要是一个映射对象，支持参数 limit: number, order_filed: order field, order: asc/desc, 默认: `{"limit": None, "order_field": None, "order": 'asc'}` | 否   |
+| database                | 迁移的数据库，可以写为扩展形式 `{"name": "database name", "tables": ["table1", "table2", {"name": "table3", "rules": {...}}]}` | 是   |
 
 > database 和 database.tables 支持简写为一个名称
 
 最后，执行  `python migration.py -f migration.yaml` 并且确认迁移，脚本将会自动进行迁移操作，如果不想点确认或者想在定时任务里边运行，可以运行 `/path/to/python /path/to/migration.py -y -f migration.yaml`。
+
+```shell
+ % python migration.py
+[migration] 127.0.0.1 > 127.0.0.1 testdb.students by rules: {'limit': 2}
+[migration] 127.0.0.1 > 127.0.0.1 testdb.students2 by rules: {'limit': 2}
+Continue (Y/N)? y
+[migration] started
+[migration] 2 items at testdb.students.{'limit': 2}
+[migration] 2 items at testdb.students2.{'limit': 2}
+[migration] completed between 0.176
+```
+
+```shell
+% python migration.py -y
+[migration] 127.0.0.1 > 127.0.0.1 testdb.students by rules: {'limit': 2}
+[migration] 127.0.0.1 > 127.0.0.1 testdb.students2 by rules: {'limit': 2}
+[migration] started
+[migration] 2 items at testdb.students.{'limit': 2}
+[migration] 2 items at testdb.students2.{'limit': 2}
+[migration] completed between 0.144
+```
+

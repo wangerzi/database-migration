@@ -78,7 +78,8 @@ def build_migration_plan(config):
                 "dst_con": dst_con,
                 "database": database,
                 "table": table_name,
-                "rules": rules
+                "rules": rules,
+                "config": config["config"],
             })
     return plan, err
 
@@ -95,19 +96,19 @@ def migration_database(plan):
     # prepare migration database struct
     for item in plan:
         migration = MigrationOperation(item["src_con"], item['dst_con'])
-        # 1. migration database strct
-        migration.migration_database_struct(item["database"])
+        # 1. migration database struct
+        migration.migration_database_struct(item["database"], item['config']['rebuild_database'])
         # 2. migration table struct
-        migration.migration_table_struct(item['database'], item['table'])
+        migration.migration_table_struct(item['database'], item['table'], item['config']['rebuild_table'])
         # 3. migration table data
-        res = migration.migration_table_data(item['database'], item['table'], item['rules'])
+        res = migration.migration_table_data(item['database'], item['table'], item['rules'], item['config']['rebuild_data'])
         if res < 0:
             print("[migration] error migration data %s.%s.%s" % (item['database'], item['table'], item['rules']))
         else:
             print("[migration] %s items at %s.%s.%s" % (res, item['database'], item['table'], item['rules']))
         migration.complete()
     end_micro_time = int(time.time() * 1000)
-    print("[migration] ended between %.3f" % ((end_micro_time - start_micro_time) / 1000))
+    print("[migration] completed between %.3f" % ((end_micro_time - start_micro_time) / 1000))
 
 
 def run():

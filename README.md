@@ -78,6 +78,10 @@ dst:
   port: 3306
   user: root
   passwd: root
+config:
+  rebuild_database: never
+  rebuild_table: auto
+  rebuild_data: alway
 rules:
   limit: 10000
 database:
@@ -109,6 +113,11 @@ JSON config **(Developing)**:
     "user": "root",
     "passwd": "root"
   },
+  "config": {
+    "rebuild_database": "never",
+    "rebuild_table": "auto",
+    "rebuild_data": "alway"
+  },
   "rules": {
     "limit": 10000
   },
@@ -131,21 +140,47 @@ JSON config **(Developing)**:
 }
 ```
 
-| param      | Comment                                                      | required |
-| ---------- | ------------------------------------------------------------ | -------- |
-| src        | source of the database                                       | true     |
-| src.type   | type of the source database, support mysql only at now.      | true     |
-| src.port   | port of the source database                                  | true     |
-| src.user   | User of the source database                                  | true     |
-| src.passwd | password of the source database                              | true     |
-| dst        | target of the database                                       | true     |
-| dst.type   | type of the target database, support mysql only at now.      | true     |
-| dst.port   | port of the target database                                  | true     |
-| dst.user   | User of the target database                                  | true     |
-| dst.passwd | password of the target database                              | true     |
-| rules      | should be a map, support limit: number, order_filed: order field, order: asc/desc, default: `{"limit": None, "order_field": None, "order": 'asc'}` | false    |
-| database   | Migration databases, you can expend as `{"name": "database name", "tables": ["table1", "table2", {"name": "table3", "rules": {...}}]}` | true     |
+| param                   | Comment                                                      | required |
+| ----------------------- | ------------------------------------------------------------ | -------- |
+| src                     | source of the database                                       | true     |
+| src.type                | type of the source database, support mysql only at now.      | true     |
+| src.port                | port of the source database                                  | true     |
+| src.user                | User of the source database                                  | true     |
+| src.passwd              | password of the source database                              | true     |
+| dst                     | target of the database                                       | true     |
+| dst.type                | type of the target database, support mysql only at now.      | true     |
+| dst.port                | port of the target database                                  | true     |
+| dst.user                | User of the target database                                  | true     |
+| dst.passwd              | password of the target database                              | true     |
+| config                  | Another config                                               | true     |
+| config.rebuild_database | Rebuild database (auto/always/never) if use auto, it will check exists and compare create sql | true     |
+| config.rebuild_table    | Rebuild table (auto/always/never) if use auto, it will check exists and compare create sql | true     |
+| config.rebuild_data     | Rebuild table data (auto/always/never) auto or always, it will truncate table data and rebuild | true     |
+| rules                   | should be a map, support limit: number, order_filed: order field, order: asc/desc, default: `{"limit": None, "order_field": None, "order": 'asc'}` | false    |
+| database                | Migration databases, you can expend as `{"name": "database name", "tables": ["table1", "table2", {"name": "table3", "rules": {...}}]}` | true     |
 
 > database and database.tables support `shorthand` that only config a name
 
 At last, execute `python migration.py -f migration.yaml` and confirm execution, it will migration automatic, if you don't want to confirm or you want to  migration by crontab automitic, you can use `/path/to/python /path/to/migration.py -y -f migration.yaml`
+
+```shell
+ % python migration.py
+[migration] 127.0.0.1 > 127.0.0.1 testdb.students by rules: {'limit': 2}
+[migration] 127.0.0.1 > 127.0.0.1 testdb.students2 by rules: {'limit': 2}
+Continue (Y/N)? y
+[migration] started
+[migration] 2 items at testdb.students.{'limit': 2}
+[migration] 2 items at testdb.students2.{'limit': 2}
+[migration] completed between 0.176
+```
+
+```shell
+% python migration.py -y
+[migration] 127.0.0.1 > 127.0.0.1 testdb.students by rules: {'limit': 2}
+[migration] 127.0.0.1 > 127.0.0.1 testdb.students2 by rules: {'limit': 2}
+[migration] started
+[migration] 2 items at testdb.students.{'limit': 2}
+[migration] 2 items at testdb.students2.{'limit': 2}
+[migration] completed between 0.144
+```
+

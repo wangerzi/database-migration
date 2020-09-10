@@ -50,6 +50,10 @@ class BaseConnector(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
+    def truncate_table(self, database, table):
+        pass
+
+    @abc.abstractmethod
     def use_database(self, database):
         pass
 

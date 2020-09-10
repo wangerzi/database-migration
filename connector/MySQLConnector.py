@@ -108,6 +108,9 @@ class MySQLConnector(BaseConnector):
     def get_drop_table_sql(self, database, table):
         return "DROP TABLE IF EXISTS %s.%s;" % (database, table)
 
+    def truncate_table(self, database, table):
+        self.execute_sql("TRUNCATE TABLE %s.%s" % (database, table))
+
     def use_database(self, database):
         self.execute_sql('USE %s' % database)
 
