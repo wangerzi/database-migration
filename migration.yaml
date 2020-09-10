@@ -1,0 +1,20 @@
+src:
+  type: mysql
+  host: 127.0.0.1
+  port: 3356
+  user: root
+  passwd: root
+dst:
+  type: mysql
+  host: 127.0.0.1
+  port: 3256
+  user: root
+  passwd: root
+config:
+  rebuild_database: never
+  rebuild_table: auto
+  rebuild_data: always
+rules:
+  limit: 2
+database:
+  - testdb
