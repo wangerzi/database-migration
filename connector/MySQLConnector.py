@@ -76,7 +76,7 @@ class MySQLConnector(BaseConnector):
         #             item[j] = item[j].strftime("%Y-%m-%d")
         #     data[i] = tuple(item)
         fields = self.get_table_fields(database, table)
-        fields_str = ','.join(['%s' % v["id"] for v in fields])
+        fields_str = ','.join(['`%s`' % v["id"] for v in fields])
         cols = ','.join(['%s' for _ in range(0, len(fields))])
         sql = "INSERT INTO %s.%s(%s) VALUES (%s)" % (database, table, fields_str, cols)  # INSERT INTO XX.XX VALUES(%s,%s,%s)
         cur.executemany(sql, data)
